@@ -21,3 +21,50 @@ equipe de TI.
 |            |                               | Soluções baseadas em manipulação de texto                 |
 |            |                               | Soluções fáceis para sistemas *nix, difíceis para Windows |
 | Powershell | Sintaxe concisa               | Checagem dinâmica de tipos                                |
+|            |                               | Soluções difíceis para sistemas *nix                      |
+
+A linguagem escolhida é Java porque sintaxe prolixa não prevalece
+sobre checagem estática de tipos e empacotamento de dependências.
+
+* Sistem de build Maven
+O sistema de build escolhido é o Maven porque é utilizado como
+back-end de algumas IDEs Java e pode ser utilizado na linha de comando.
+
+* Solução e Dependências
+A solução consiste em resgatar uma lista de páginas HTML que listam os
+arquivos que consistem nos ativos de TI cuja versão queremos
+determinar. Normalmente essas páginas são geradas por uma função de
+listagem de diretório, o que facilita o parsing.
+
+Como dependências serão utilizados o Jsoup Java HTML Parser, presente no repositório central do
+Maven e o OpenJDK. O Jsoup foi escolhido por ser simples e bem
+mantido. O OpenJDK foi escolhido por ser uma implementação de fonte
+aberta com licença GPL-2.0 da plataforma Java SE.
+
+As versões utilizadas para desenvolvimento são a seguinte:
+#+begin_src sh :results output
+  java --version
+#+end_src
+
+#+RESULTS:
+: openjdk 17.0.7 2023-04-18
+: OpenJDK Runtime Environment (Red_Hat-17.0.7.0.7-4.fc38) (build 17.0.7+7)
+: OpenJDK 64-Bit Server VM (Red_Hat-17.0.7.0.7-4.fc38) (build 17.0.7+7, mixed mode, sharing)
+
+#+begin_src sh :results output
+  mvn --version
+#+end_src
+
+#+RESULTS:
+: Apache Maven 3.8.6 (Red Hat 3.8.6-4)
+: Maven home: /usr/share/maven
+: Java version: 17.0.7, vendor: Red Hat, Inc., runtime: /usr/lib/jvm/java-17-openjdk-17.0.7.0.7-5.fc38.x86_64
+: Default locale: pt_BR, platform encoding: UTF-8
+: OS name: "linux", version: "6.3.8-200.fc38.x86_64", arch: "amd64", family: "unix"
+
+* TODO mostrar versão do Jsoup após instalação
+
+* Projeto
+
+
+
