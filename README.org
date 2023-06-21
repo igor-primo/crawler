@@ -62,6 +62,30 @@ As versões utilizadas para desenvolvimento são a seguinte:
 : Default locale: pt_BR, platform encoding: UTF-8
 : OS name: "linux", version: "6.3.8-200.fc38.x86_64", arch: "amd64", family: "unix"
 
-* TODO mostrar versão do Jsoup após instalação
+- Jsoup :: 1.16.1
 
 * Projeto
+** Criação do projeto
+O seguinte comando foi utilizado para criar o projeto:
+#+begin_src sh :tangle ./create-project.sh :shebang "#!/bin/bash"
+  mvn archetype:generate -DgroupId=trtLab -DartifactId=crawler-src -DarchetypeArtifactId=maven-archetype-quickstart -DarchetypeVersion=1.4 -DinteractiveMode=false
+#+end_src
+
+** Configuração da dependência Jsoup
+O seguinte snippet de configuração foi adicionado ao arquivo
+./crawler-src/pom.xml
+#+begin_src txt
+  <!-- https://mvnrepository.com/artifact/org.jsoup/jsoup -->
+  <dependency>
+	  <groupId>org.jsoup</groupId>
+	  <artifactId>jsoup</artifactId>
+	  <version>1.16.1</version>
+  </dependency>
+#+end_src
+
+Para baixar dependências:
+#+begin_src sh :tangle ./download-dependencies.sh :shebang "#!/bin/bash"
+  cd crawler-src
+  mvn dependency:resolve
+#+end_src
+
