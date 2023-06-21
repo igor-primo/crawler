@@ -1,0 +1,23 @@
+#+TITLE: Crawler
+#+STARTUP: show2levels
+
+* Introdução
+Esse texto é a documentação de um crawler para resgatar a versão de
+alguns ativos de TI.
+
+* Linguagem do programa
+Aqui temos uma lista das possíveis linguagens e seus prós e
+contras. Foram escolhidas para avaliação porque são conhecidas pela
+equipe de TI.
+
+| Linguagem  | Prós                          | Contras                                                   |
+|------------+-------------------------------+-----------------------------------------------------------|
+| Java       | Checagem estática de tipos    | Sintaxe prolixa                                           |
+|            | Empacotamento de dependências |                                                           |
+| Python     | Sintaxe concisa               | Checagem dinâmica de tipos                                |
+| PHP        | Sintaxe concisa               | Checagem dinâmica de tipos                                |
+|            |                               | Difícil configuração de ambiente                          |
+| Bash       | Sintaxe concisa               | Checagem dinâmica de tipos                                |
+|            |                               | Soluções baseadas em manipulação de texto                 |
+|            |                               | Soluções fáceis para sistemas *nix, difíceis para Windows |
+| Powershell | Sintaxe concisa               | Checagem dinâmica de tipos                                |

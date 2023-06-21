@@ -1,0 +1,16 @@
+#+TITLE: Crawler
+#+STARTUP: show2levels
+
+* Introdução
+Esse texto é a documentação de um crawler para resgatar a versão de
+alguns ativos de TI.
+
+* Linguagem do programa
+Possíveis linguagens e seus prós e contras:
+
+| Linguagem  | Prós | Contras |
+| Java       |      |         |
+| Python     |      |         |
+| PHP        |      |         |
+| Bash       |      |         |
+| Powershell |      |         |
