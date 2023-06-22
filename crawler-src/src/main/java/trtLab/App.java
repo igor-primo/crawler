@@ -47,6 +47,7 @@ class Asset
 		this.URLs = new ArrayList<String>(Arrays.asList(URLs));
 		this.versions = new ArrayList<String>();
 	}
+	
 	Asset print()				// Imprime elementos da classe
 	{
 		System.out.println(this.assetName + " - " + this.URLs.toString());
@@ -55,6 +56,7 @@ class Asset
 				this.log(version);
 		return this;
 	}
+	
 	Asset getVersions()
 	{
 		for(String URL : this.URLs) {
@@ -70,6 +72,7 @@ class Asset
 		}
 		return this;
 	}
+	
 	void parseElements(Document doc)
 	{
 		if(doc != null) {
@@ -99,6 +102,7 @@ class Asset
 			}
 		}
 	}
+	
 	void log(String str) // Wrapper para System.out.println()
 	{
 		System.out.println(str);
