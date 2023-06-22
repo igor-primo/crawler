@@ -1,6 +1,10 @@
 package trtLab;
 
 import java.io.IOException;
+import java.io.Reader;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.nio.file.Paths;
 
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -11,13 +15,18 @@ import org.jsoup.Jsoup;
 import org.jsoup.nodes.Document;
 import org.jsoup.nodes.Element;
 
+import com.opencsv.CSVReaderBuilder;
+import com.opencsv.CSVParserBuilder;
+import com.opencsv.CSVParser;
+import com.opencsv.CSVReader;
+
 public class App 
 {
     public static void main( String[] args )
     {
 		if(args.length != 1) {
 			System.out.println("Usage: programName fileName");
-			return;				// how to exit properly?
+			return;
 		}
 		
 		ArrayList<Asset> assets = new ArrayList<Asset>();
@@ -30,8 +39,22 @@ public class App
 	}
 	private static void loadURLs(ArrayList<Asset> assets, String fileName)
 	{
-		assets.add(new Asset("Rocky Linux", "https://download.rockylinux.org/pub/rocky/9/isos/x86_64/"));
-		assets.add(new Asset("Rocky Linux", "https://download.rockylinux.org/pub/rocky/9/isos/x86_64/"));
+		try {
+			CSVParser parser = new CSVParserBuilder()
+				.withSeparator(';')
+				.withIgnoreQuotations(true)
+				.build();
+			Reader reader = Files.newBufferedReader(Paths.get(fileName));
+			CSVReader csvReader = new CSVReaderBuilder(reader)
+				.withCSVParser(parser)
+				.build();
+			String[] line;
+
+			while((line = csvReader.readNext()) != null)
+				assets.add(new Asset(line[0], line[1].split(",")));
+		} catch(Exception e) {
+			System.out.println("Error opening or reading file");
+		}
 	}
 };
 
@@ -41,7 +64,7 @@ class Asset
 	public ArrayList<String> URLs;
 	public ArrayList<String> versions;
 
-	Asset(String assetName, String URLs) // Construtor
+	Asset(String assetName, String[] URLs) // Construtor
 	{
 		this.assetName = assetName;
 		this.URLs = new ArrayList<String>(Arrays.asList(URLs));
@@ -67,7 +90,8 @@ class Asset
 				if(con.response().statusCode() == 200)
 					this.parseElements(doc);
 			} catch(IOException e) {
-				// TODO: tratar caso
+				this.log("Error connecting to " + URL);
+				continue;
 			}
 		}
 		return this;
@@ -84,20 +108,22 @@ class Asset
 
 					// Exemplo: https://download.rockylinux.org/pub/rocky/9/isos/x86_64/Rocky-9.2-x86_64-boot.iso
 					// Pega o último elemento do split("/")
-					// Pega os 2 primeiros elementos do split("-")
+					// Pega os 2 primeiros elementos do split("-"), i.e, nome e versão.
 
 					if(result.length < 2)
 						continue;
 
-					if(this.versions.contains(result[0] + " - " + result[1])) // TODO: ineficiente, melhorar
+					if(this.versions.contains(result[0] + " - " + result[1])) // Previne duplicação. Ineficiente.
 						continue;
 
-					// TODO: Adiciona elementos que não são versões propriamente, como x86_64. Filtrar
+					if(!result[1].matches("^\\d+(\\.\\d+)*$")) // Às vezes, o campo de array que deveria ser uma versão é algo como "x86_64". Filtragem.
+						continue;
 					
 					this.versions.add(result[0] + " - " + result[1]);
 				}
 				break;
 			default:
+				this.log("Invalid asset name.");
 				break;
 			}
 		}

@@ -41,6 +41,9 @@ Maven e o OpenJDK. O Jsoup foi escolhido por ser simples e bem
 mantido. O OpenJDK foi escolhido por ser uma implementação de fonte
 aberta com licença GPL-2.0 da plataforma Java SE.
 
+Também serão utilizados o Maven Assembly para empacotar as dependências
+junto com o JAR da aplicação e o OpenCSV para fazer o parsing do csv.
+
 As versões utilizadas para desenvolvimento são a seguinte:
 #+begin_src sh :results output :exports both
   java --version
@@ -63,6 +66,10 @@ As versões utilizadas para desenvolvimento são a seguinte:
 : OS name: "linux", version: "6.3.8-200.fc38.x86_64", arch: "amd64", family: "unix"
 
 - Jsoup :: 1.16.1
+
+- Maven Assembly :: latest
+
+- OpenCSV :: 5.7.1
 
 * Projeto
 ** Criação do projeto
