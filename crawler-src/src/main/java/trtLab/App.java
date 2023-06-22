@@ -89,6 +89,8 @@ class Asset
 
 				if(con.response().statusCode() == 200)
 					this.parseElements(doc);
+				else
+					this.log("Status code not 200. statusCode == " + con.response().statusCode());
 			} catch(IOException e) {
 				this.log("Error connecting to " + URL);
 				continue;
