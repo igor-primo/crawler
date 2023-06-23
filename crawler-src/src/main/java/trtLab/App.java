@@ -105,23 +105,87 @@ class Asset
 			switch(this.assetName) {
 			case "Rocky Linux":
 				for(Element element : doc.select("a[href]")) {
-					String[] target = element.absUrl("href").split("/");
-					String[] result = target[target.length-1].split("-");
+					String[] URLSplitted;
 
+					URLSplitted = element.absUrl("href").split("/");
+					
 					// Exemplo: https://download.rockylinux.org/pub/rocky/9/isos/x86_64/Rocky-9.2-x86_64-boot.iso
 					// Pega o último elemento do split("/")
 					// Pega os 2 primeiros elementos do split("-"), i.e, nome e versão.
 
-					if(result.length < 2)
+					if(URLSplitted.length < 6)
 						continue;
 
-					if(this.versions.contains(result[0] + " - " + result[1])) // Previne duplicação. Ineficiente.
+					if(this.versions.contains(this.assetName + " - " + URLSplitted[5])) // Previne duplicação. Ineficiente.
 						continue;
 
-					if(!result[1].matches("^\\d+(\\.\\d+)*$")) // Às vezes, o campo de array que deveria ser uma versão é algo como "x86_64". Filtragem.
+					if(!URLSplitted[5].matches("^\\d+(\\.\\d+)*$")) // Às vezes, o campo de array que deveria ser uma versão é algo como "x86_64". Filtragem.
 						continue;
 					
-					this.versions.add(result[0] + " - " + result[1]);
+					this.versions.add(this.assetName + " - " + URLSplitted[5]);
+					this.versions.sort(null);
+				}
+				break;
+			case "Ubuntu Server":
+				for(Element element : doc.select("a[href]")) {
+					String URL;
+					String[] URLSplitted;
+
+					URL = element.absUrl("href");
+
+					if(!URL.startsWith("https://releases.ubuntu.com/"))
+						continue;
+
+					URLSplitted = URL.split("/");
+
+					if(URLSplitted.length < 4)
+						continue;
+
+					if(this.versions.contains(this.assetName + " - " + URLSplitted[3])) // Previne duplicação. Ineficiente.
+						continue;
+
+					if(!URLSplitted[3].matches("^\\d+(\\.\\d+)*$"))
+						continue;
+
+					this.versions.add(this.assetName + " - " + URLSplitted[3]);
+					this.versions.sort(null);
+				}
+				break;
+			case "Oracle Linux":
+				for(Element element : doc.select("a[href]")) {
+					String URL;
+					String[] URLSplitted;
+					String versionString;
+
+					URL = element.absUrl("href");
+
+					if(!URL.startsWith("https://yum.oracle.com/ISOS/OracleLinux/"))
+						continue;
+
+					URLSplitted = URL.split("/");
+
+					if(URLSplitted.length < 7)
+					 	continue;
+					
+					versionString = URLSplitted[5].charAt(2) + "." + URLSplitted[6].charAt(1);
+					
+					if(this.versions.contains(this.assetName + " - " + versionString)) // Previne duplicação. Ineficiente.
+					 	continue;
+
+					if(!versionString.matches("^\\d+(\\.\\d+)*$"))
+						continue;
+
+					this.versions.add(this.assetName + " - " + versionString);
+					this.versions.sort(null);
+				}
+				break;
+			case "Windows Server":
+				for(Element element : doc.select("td")) {
+					if(!element.ownText().contains("Windows Server"))
+						continue;
+
+					this.versions.add(this.assetName + " - " + element.ownText());
+					this.versions.sort(null);
 				}
 				break;
 			default:
