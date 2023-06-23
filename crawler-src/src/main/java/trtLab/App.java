@@ -90,12 +90,13 @@ class Asset
 				if(con.response().statusCode() == 200)
 					this.parseElements(doc);
 				else
-					this.log("Status code not 200. statusCode == " + con.response().statusCode());
+					this.log("Status code not 200. statusCode == " + con.response().statusCode() + " for URL = " + URL);
 			} catch(IOException e) {
 				this.log("Error connecting to " + URL);
 				continue;
 			}
 		}
+		this.versions.sort(null);
 		return this;
 	}
 	
@@ -123,7 +124,6 @@ class Asset
 						continue;
 					
 					this.versions.add(this.assetName + " - " + URLSplitted[5]);
-					this.versions.sort(null);
 				}
 				break;
 			case "Ubuntu Server":
@@ -148,7 +148,6 @@ class Asset
 						continue;
 
 					this.versions.add(this.assetName + " - " + URLSplitted[3]);
-					this.versions.sort(null);
 				}
 				break;
 			case "Oracle Linux":
@@ -176,7 +175,6 @@ class Asset
 						continue;
 
 					this.versions.add(this.assetName + " - " + versionString);
-					this.versions.sort(null);
 				}
 				break;
 			case "Windows Server":
@@ -185,7 +183,6 @@ class Asset
 						continue;
 
 					this.versions.add(this.assetName + " - " + element.ownText());
-					this.versions.sort(null);
 				}
 				break;
 			default:
