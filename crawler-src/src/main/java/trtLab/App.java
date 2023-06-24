@@ -98,7 +98,7 @@ class Asset
 			}
 		}
 		this.versions.sort(null);
-		this.versions.set(this.versions.size() - 1, this.versions.get(this.versions.size() - 1) + " #");
+		this.versions.set(this.versions.size() - 1, this.versions.get(this.versions.size() - 1) + " ### Versão atual");
 		return this;
 	}
 	
