@@ -26,7 +26,7 @@ public class App
     {
 		if(args.length != 1) {
 			System.out.println("Usage: programName fileName");
-			return;
+			System.exit(0);
 		}
 		
 		ArrayList<Asset> assets = new ArrayList<Asset>();
@@ -54,6 +54,7 @@ public class App
 				assets.add(new Asset(line[0], line[1].split(",")));
 		} catch(Exception e) {
 			System.out.println("Error opening or reading file");
+			System.exit(1);
 		}
 	}
 };
@@ -179,7 +180,6 @@ class Asset
 
 				if(!element.ownText().contains("Windows Server"))
 					continue;
-				this.log(element.absUrl("td"));
 				this.versions.add(this.assetName + " - " + element.ownText());
 			}
 			break;
