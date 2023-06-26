@@ -53,7 +53,7 @@ public class App
 			while((line = csvReader.readNext()) != null)
 				assets.add(new Asset(line[0], line[1].split(",")));
 		} catch(Exception e) {
-			System.out.println("Error opening or reading file");
+			System.out.println("Error opening or reading file.");
 			System.exit(1);
 		}
 	}
@@ -74,7 +74,7 @@ class Asset
 	
 	Asset print()				// Imprime elementos da classe
 	{
-		System.out.println(this.assetName + " - " + this.URLs.toString());
+		System.out.println("# " + this.assetName + " - " + this.URLs.toString());
 		if(this.versions != null)
 			for(String version : this.versions)
 				this.log(version);
@@ -94,13 +94,13 @@ class Asset
 					this.log("Status code not 200. statusCode == " + con.response().statusCode() + " for URL = " + URL);
 
 			} catch(IOException e) {
-				this.log("Error connecting to " + URL);
+				this.log("Error connecting to " + URL + ". Skipping.");
 				continue;
 			}
 		}
 		this.versions.sort(null);
 		if(!this.versions.isEmpty())
-			this.versions.set(this.versions.size() - 1, this.versions.get(this.versions.size() - 1) + " ### Versão atual");
+			this.versions.set(this.versions.size() - 1, "- " + this.versions.get(this.versions.size() - 1));
 		return this;
 	}
 	
