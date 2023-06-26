@@ -98,7 +98,8 @@ class Asset
 			}
 		}
 		this.versions.sort(null);
-		this.versions.set(this.versions.size() - 1, this.versions.get(this.versions.size() - 1) + " ### Versão atual");
+		if(!this.versions.isEmpty())
+			this.versions.set(this.versions.size() - 1, this.versions.get(this.versions.size() - 1) + " ### Versão atual");
 		return this;
 	}
 	
@@ -176,6 +177,18 @@ class Asset
 				if(!element.ownText().contains("Windows Server"))
 					continue;
 				this.versions.add(this.assetName + " - " + element.ownText());
+			}
+			break;
+		case "Laravel":
+
+			for(Element element : doc.select("a[href]")) {
+
+				String URL;
+
+				URL = element.absUrl("href");
+				if(!URL.startsWith("https://github.com/laravel/laravel/releases/tag/"))
+					continue;
+				this.versions.add(this.assetName + " - " + URL.split("/")[7]);
 			}
 			break;
 		default:
