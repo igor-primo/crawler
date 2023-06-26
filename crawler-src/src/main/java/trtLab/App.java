@@ -121,9 +121,10 @@ class Asset
 				// Pega os 2 primeiros elementos do split("-"), i.e, nome e versão.
 				if(URLSplitted.length < 6)
 					continue;
-				if(this.versions.contains(this.assetName + " - " + URLSplitted[5])) // Previne duplicação. Ineficiente.
+				if(this.versions.contains(this.assetName + " - " + URLSplitted[5]))
 					continue;
-				if(!URLSplitted[5].matches("^\\d+(\\.\\d+)*$")) // Às vezes, o campo de array que deveria ser uma versão é algo como "x86_64". Filtragem.
+				// Às vezes, o campo de array que deveria ser uma versão é algo como "x86_64". Filtragem.
+				if(!URLSplitted[5].matches("^\\d+(\\.\\d+)*$")) 
 					continue;
 				this.versions.add(this.assetName + " - " + URLSplitted[5]);
 			}
@@ -138,6 +139,7 @@ class Asset
 				URL = element.absUrl("href");
 				if(!URL.startsWith("https://releases.ubuntu.com/"))
 					continue;
+				// Exemplo: https://releases.ubuntu.com/23.04/
 				URLSplitted = URL.split("/");
 				if(URLSplitted.length < 4)
 					continue;
@@ -159,6 +161,7 @@ class Asset
 				URL = element.absUrl("href");
 				if(!URL.startsWith("https://yum.oracle.com/ISOS/OracleLinux/"))
 					continue;
+				// Exemplo: https://yum.oracle.com/ISOS/OracleLinux/OL7/u8/x86_64/x86_64-boot.iso
 				URLSplitted = URL.split("/");
 				if(URLSplitted.length < 7)
 					continue;
@@ -176,6 +179,7 @@ class Asset
 
 				if(!element.ownText().contains("Windows Server"))
 					continue;
+				this.log(element.absUrl("td"));
 				this.versions.add(this.assetName + " - " + element.ownText());
 			}
 			break;
@@ -188,7 +192,27 @@ class Asset
 				URL = element.absUrl("href");
 				if(!URL.startsWith("https://github.com/laravel/laravel/releases/tag/"))
 					continue;
+				// Exemplo: https://github.com/laravel/laravel/releases/tag/v10.2.4
 				this.versions.add(this.assetName + " - " + URL.split("/")[7]);
+			}
+			break;
+		case "PHP":
+
+			for(Element element : doc.select("a[href]")) {
+
+				String URL;
+				
+				URL = element.absUrl("href");
+				if(!URL.startsWith("https://www.php.net/distributions/"))
+					continue;
+				// Current Stable
+				// Exemplo: https://www.php.net/distributions/php-8.0.29.tar.xz
+				String[] URLSplitted;
+				URLSplitted = URL.split("-")[1].split("\\.");
+				this.versions.add(this.assetName + " - " +
+								  URLSplitted[0] + "." +
+								  URLSplitted[1] + "." +
+								  URLSplitted[2]);
 			}
 			break;
 		default:
