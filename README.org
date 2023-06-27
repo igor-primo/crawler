@@ -90,9 +90,181 @@ O seguinte snippet de configuração foi adicionado ao arquivo
   </dependency>
 #+end_src
 
+** Configuração do OpenCSV
+O seguinte snippet de configuração foi adicionado ao arquivo
+./crawler-src/pom.xml
+#+begin_src txt
+    <!-- https://mvnrepository.com/artifact/com.opencsv/opencsv -->
+  <dependency>
+	  <groupId>com.opencsv</groupId>
+	  <artifactId>opencsv</artifactId>
+	  <version>5.7.1</version>
+  </dependency>
+#+end_src
+
+** Configuração do plugin Assembly
+Esse plugin serve para incluir as dependências no JAR da aplicação,
+facilitando a portabilidade.
+O seguinte snippet de configuração foi adicionado ao arquivo
+./crawler-src/pom.xml
+#+begin_src  txt
+	 <plugin>
+			  <artifactId>maven-assembly-plugin</artifactId>
+			  <executions>
+				  <execution>
+					   <phase>package</phase>
+					   <goals>
+						   <goal>single</goal>
+					   </goals>
+				   </execution>
+			   </executions>
+			   <configuration>
+					<!-- ... -->
+					<archive>
+						<manifest>
+							  <mainClass>fully.qualified.MainClass</mainClass>
+						</manifest>
+					</archive>
+					<descriptorRefs>
+						<descriptorRef>jar-with-dependencies</descriptorRef>
+				   </descriptorRefs>
+			  </configuration>
+	  </plugin>
+#+end_src
+
 Para baixar dependências:
 #+begin_src sh :tangle ./download-dependencies.sh :shebang "#!/bin/bash"
   cd crawler-src
   mvn dependency:resolve
 #+end_src
 
+* Compilação
+#+begin_src sh
+  cd crawler-src
+  mvn clean compile assembly:single
+#+end_src
+
+* Execução
+#+begin_src txt
+  java -cp crawler-src/target/crawler-1.0-jar-with-dependencies.jar trtLab.App input.csv
+#+end_src
+
+* Entrada
+A entrada é um arquivo csv contendo o nome do ativo e as URLs
+que apontam para os artefatos do ativo. O nome do ativo deve ser
+separado das URLs por ponto e vírgula (";"). Por exemplo:
+#+begin_src txt
+Rocky Linux;https://download.rockylinux.org/pub/rocky/
+Ubuntu Server;https://releases.ubuntu.com/
+Oracle Linux;https://yum.oracle.com/oracle-linux-isos.html
+Windows Server;https://learn.microsoft.com/en-us/windows-server/get-started/windows-server-release-info
+Laravel;https://github.com/laravel/laravel/releases
+PHP;https://www.php.net/downloads.php
+#+end_src
+
+Atenção: o reconhecimento do nome do ativo depende de strings
+codificadas no código fonte. Por exemplo: 
+#+begin_src java
+	case "Ubuntu Server":
+
+		for(Element element : doc.select("a[href]")) {
+
+			String URL;
+			String[] URLSplitted;
+
+			URL = element.absUrl("href");
+			if(!URL.startsWith("https://releases.ubuntu.com/"))
+				continue;
+			// Exemplo: https://releases.ubuntu.com/23.04/
+			URLSplitted = URL.split("/");
+			if(URLSplitted.length < 4)
+				continue;
+			if(this.versions.contains(this.assetName + " - " + URLSplitted[3]))
+				continue;
+			if(!URLSplitted[3].matches("^\\d+(\\.\\d+)*$"))
+				continue;
+			this.versions.add(this.assetName + " - " + URLSplitted[3]);
+		}
+		break;
+#+end_src
+
+Cada inclusão de ativo implica necessidade de mudança do
+código fonte, já que o ativo precisa ser reconhecido com comparação
+estrita de nome e o tratamento da URL precisa ser codificado segundo
+os padrões exibidos na página apontada pela URL.
+
+* Saída
+Exemplo de saída:
+#+begin_src txt
+# Rocky Linux - [https://download.rockylinux.org/pub/rocky/]
+Rocky Linux - 8
+Rocky Linux - 8.4
+Rocky Linux - 8.5
+Rocky Linux - 8.6
+Rocky Linux - 8.7
+Rocky Linux - 8.8
+Rocky Linux - 9
+Rocky Linux - 9.0
+Rocky Linux - 9.1
+- Rocky Linux - 9.2
+# Ubuntu Server - [https://releases.ubuntu.com/]
+Ubuntu Server - 14.04
+Ubuntu Server - 14.04.6
+Ubuntu Server - 16.04
+Ubuntu Server - 16.04.7
+Ubuntu Server - 18.04
+Ubuntu Server - 18.04.6
+Ubuntu Server - 20.04
+Ubuntu Server - 20.04.6
+Ubuntu Server - 22.04
+Ubuntu Server - 22.04.2
+Ubuntu Server - 22.10
+- Ubuntu Server - 23.04
+# Oracle Linux - [https://yum.oracle.com/oracle-linux-isos.html]
+Oracle Linux - 6.1
+Oracle Linux - 6.8
+Oracle Linux - 6.9
+Oracle Linux - 7.7
+Oracle Linux - 7.8
+Oracle Linux - 7.9
+Oracle Linux - 8.6
+Oracle Linux - 8.7
+Oracle Linux - 8.8
+Oracle Linux - 9.0
+Oracle Linux - 9.1
+- Oracle Linux - 9.2
+# Windows Server - [https://learn.microsoft.com/en-us/windows-server/get-started/windows-server-release-info]
+Windows Server - Windows Server 2016 (version 1607)
+Windows Server - Windows Server 2019 (version 1809)
+- Windows Server - Windows Server 2022
+# Laravel - [https://github.com/laravel/laravel/releases]
+Laravel - v10.0.5
+Laravel - v10.0.6
+Laravel - v10.0.7
+Laravel - v10.1.0
+Laravel - v10.1.1
+Laravel - v10.2.0
+Laravel - v10.2.1
+Laravel - v10.2.2
+Laravel - v10.2.3
+- Laravel - v10.2.4
+# PHP - [https://www.php.net/downloads.php]
+PHP - 8.0.29
+PHP - 8.0.29
+PHP - 8.0.29
+PHP - 8.0.29
+PHP - 8.0.29
+PHP - 8.0.29
+PHP - 8.1.20
+PHP - 8.1.20
+PHP - 8.1.20
+PHP - 8.1.20
+PHP - 8.1.20
+PHP - 8.1.20
+PHP - 8.2.7
+PHP - 8.2.7
+PHP - 8.2.7
+PHP - 8.2.7
+PHP - 8.2.7
+- PHP - 8.2.7
+#+end_src
